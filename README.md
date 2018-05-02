@@ -3,8 +3,7 @@
 
 # DIAMETER
 
-DIAMETER base protocol definition using [med](https://github.com/cppden/med) library
-according to RFC6733/3588.
+DIAMETER base protocol definition using [med](https://github.com/cppden/med) library according to RFC6733/3588.
 
 See [unit tests](../master/ut/diameter.cpp) for example of usage.
 
