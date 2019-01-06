@@ -173,9 +173,9 @@ struct DWA : med::set< avp_code
 };
 
 template <class MSG>
-using request = med::tag<med::value<med::fixed<REQUEST | MSG::code>>, MSG>;
+using request = med::tag<med::value<med::fixed<REQUEST | MSG::code, uint32_t>>, MSG>;
 template <class MSG>
-using answer = med::tag<med::value<med::fixed<MSG::code>>, MSG>;
+using answer = med::tag<med::value<med::fixed<MSG::code, uint32_t>>, MSG>;
 
 //--- DIAMETER protocol base part
 struct base : med::choice< header

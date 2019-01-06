@@ -24,7 +24,7 @@ using O = med::optional<T...>;
 
 
 //to join message code and request/answer bit
-constexpr std::size_t REQUEST = 0x80000000;
+constexpr uint32_t REQUEST = 0x80000000;
 
 /***************************************************************
  * Header definitions

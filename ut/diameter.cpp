@@ -361,7 +361,7 @@ TEST(encode, cer)
 		id->ref<diameter::auth_application_id>().set(diameter::APPLICATION::GXX);
 	}
 
-	if (!encode(med::make_octet_encoder(ctx), dia)) { FAIL() << toString(ctx.error_ctx()); }
+	encode(med::octet_encoder{ctx}, dia);
 	EXPECT_EQ(sizeof(cer_encoded1), ctx.buffer().get_offset());
 	EXPECT_TRUE(Matches(cer_encoded1, buffer));
 }
@@ -372,7 +372,7 @@ TEST(decode, cer)
 
 	std::size_t alloc_buf[1024];
 	med::decoder_context<> ctx{ cer_encoded1, alloc_buf };
-	if (!decode(med::make_octet_decoder(ctx), dia)) { FAIL() << toString(ctx.error_ctx()); }
+	decode(med::octet_decoder{ctx}, dia);
 
 	ASSERT_EQ(0, dia.header().ap_id());
 	ASSERT_EQ(0x22222222, dia.header().hop_id());
@@ -493,7 +493,7 @@ TEST(encode, cea)
 		id->ref<diameter::auth_application_id>().set(diameter::APPLICATION::GXX);
 	}
 
-	if (!encode(med::make_octet_encoder(ctx), dia)) { FAIL() << toString(ctx.error_ctx()); }
+	encode(med::octet_encoder{ctx}, dia);
 	ASSERT_EQ(sizeof(cea_encoded1), ctx.buffer().get_offset());
 	EXPECT_TRUE(Matches(cea_encoded1, buffer));
 }
@@ -504,7 +504,7 @@ TEST(decode, cea)
 	med::decoder_context<> ctx{ cea_encoded1, alloc_buf };
 
 	diameter::base dia;
-	if (!decode(med::make_octet_decoder(ctx), dia)) { FAIL() << toString(ctx.error_ctx()); }
+	decode(med::octet_decoder{ctx}, dia);
 
 	EXPECT_EQ(0, dia.header().ap_id());
 	EXPECT_EQ(0x22222222, dia.header().hop_id());
@@ -600,7 +600,7 @@ TEST(encode, dpr)
 	msg.ref<diameter::origin_realm>().set("orig.realm.net"sv);
 	msg.ref<diameter::disconnect_cause>().set(diameter::DISCONNECT_CAUSE::DO_NOT_WANT_TO_TALK_TO_YOU);
 
-	if (!encode(med::make_octet_encoder(ctx), dia)) { FAIL() << toString(ctx.error_ctx()); }
+	encode(med::octet_encoder{ctx}, dia);
 	ASSERT_EQ(sizeof(dpr_encoded1), ctx.buffer().get_offset());
 	EXPECT_TRUE(Matches(dpr_encoded1, buffer));
 }
@@ -610,7 +610,7 @@ TEST(decode, dpr)
 	diameter::base dia;
 
 	med::decoder_context<> ctx{ dpr_encoded1 };
-	if (!decode(med::make_octet_decoder(ctx), dia)) { FAIL() << toString(ctx.error_ctx()); }
+	decode(med::octet_decoder{ctx}, dia);
 
 	EXPECT_EQ(0, dia.header().ap_id());
 	EXPECT_EQ(0x22222222, dia.header().hop_id());
@@ -651,7 +651,7 @@ TEST(encode, dpa)
 	msg.ref<diameter::origin_host>().set("Orig.Host"sv);
 	msg.ref<diameter::origin_realm>().set("orig.realm.net"sv);
 
-	if (!encode(med::make_octet_encoder(ctx), dia)) { FAIL() << toString(ctx.error_ctx()); }
+	encode(med::octet_encoder{ctx}, dia);
 	ASSERT_EQ(sizeof(dpa_encoded1), ctx.buffer().get_offset());
 	EXPECT_TRUE(Matches(dpa_encoded1, buffer));
 }
@@ -661,7 +661,7 @@ TEST(decode, dpa)
 	diameter::base dia;
 
 	med::decoder_context<> ctx{ dpa_encoded1 };
-	if (!decode(med::make_octet_decoder(ctx), dia)) { FAIL() << toString(ctx.error_ctx()); }
+	decode(med::octet_decoder{ctx}, dia);
 
 	EXPECT_EQ(0, dia.header().ap_id());
 	EXPECT_EQ(0x22222222, dia.header().hop_id());
@@ -701,7 +701,7 @@ TEST(encode, dwr)
 	msg.ref<diameter::origin_realm>().set("orig.realm.net"sv);
 	//msg.ref<diameter::origin_state_id>().set(2);
 
-	if (!encode(med::make_octet_encoder(ctx), dia)) { FAIL() << toString(ctx.error_ctx()); }
+	encode(med::octet_encoder{ctx}, dia);
 	ASSERT_EQ(sizeof(dwr_encoded1), ctx.buffer().get_offset());
 	EXPECT_TRUE(Matches(dwr_encoded1, buffer));
 }
@@ -711,7 +711,7 @@ TEST(decode, dwr)
 	diameter::base dia;
 
 	med::decoder_context<> ctx{ dwr_encoded1 };
-	if (!decode(med::make_octet_decoder(ctx), dia)) { FAIL() << toString(ctx.error_ctx()); }
+	decode(med::octet_decoder{ctx}, dia);
 
 	EXPECT_EQ(0, dia.header().ap_id());
 	EXPECT_EQ(0x22222222, dia.header().hop_id());
@@ -750,7 +750,7 @@ TEST(encode, dwa)
 	msg.ref<diameter::origin_host>().set("Orig.Host"sv);
 	msg.ref<diameter::origin_realm>().set("orig.realm.net"sv);
 
-	if (!encode(med::make_octet_encoder(ctx), dia)) { FAIL() << toString(ctx.error_ctx()); }
+	encode(med::octet_encoder{ctx}, dia);
 	ASSERT_EQ(sizeof(dwa_encoded1), ctx.buffer().get_offset());
 	EXPECT_TRUE(Matches(dwa_encoded1, buffer));
 }
@@ -760,7 +760,7 @@ TEST(decode, dwa)
 	diameter::base dia;
 
 	med::decoder_context<> ctx{ dwa_encoded1 };
-	if (!decode(med::make_octet_decoder(ctx), dia)) { FAIL() << toString(ctx.error_ctx()); }
+	decode(med::octet_decoder{ctx}, dia);
 
 	EXPECT_EQ(0, dia.header().ap_id());
 	EXPECT_EQ(0x22222222, dia.header().hop_id());
@@ -789,7 +789,7 @@ TEST(decode, dwa_unexp)
 	diameter::base dia;
 
 	med::decoder_context<> ctx{ dwa_unexp };
-	if (!decode(med::make_octet_decoder(ctx), dia)) { FAIL() << toString(ctx.error_ctx()); }
+	decode(med::octet_decoder{ctx}, dia);
 
 	ASSERT_EQ(0, dia.header().ap_id());
 	ASSERT_EQ(0x22222222, dia.header().hop_id());
