@@ -30,8 +30,8 @@ namespace diameter {
 		[ Firmware-Revision ]
 	  * [ AVP ]
 */
-struct CER : med::set< avp_code
-	, M< origin_host >
+struct CER : med::set<
+	  M< origin_host >
 	, M< origin_realm >
 	, M< host_ip_address, med::inf >
 	, M< vendor_id >
@@ -70,8 +70,8 @@ struct CER : med::set< avp_code
 	  * [ AVP ]
 
 */
-struct CEA : med::set< avp_code
-	, M< result_code >
+struct CEA : med::set<
+	  M< result_code >
 	, M< origin_host >
 	, M< origin_realm >
 	, M< host_ip_address, med::inf >
@@ -100,8 +100,8 @@ struct CEA : med::set< avp_code
 		 { Origin-Realm }
 		 { Disconnect-Cause }
 */
-struct DPR : med::set< avp_code
-	, M< origin_host >
+struct DPR : med::set<
+	  M< origin_host >
 	, M< origin_realm >
 	, M< disconnect_cause >
 	, O< any_avp, med::inf >
@@ -119,8 +119,8 @@ struct DPR : med::set< avp_code
 		 [ Error-Message ]
 	   * [ Failed-AVP ]
 */
-struct DPA : med::set< avp_code
-	, M< result_code >
+struct DPA : med::set<
+	  M< result_code >
 	, M< origin_host >
 	, M< origin_realm >
 	, O< error_message >
@@ -138,8 +138,8 @@ struct DPA : med::set< avp_code
 		 { Origin-Realm }
 		 [ Origin-State-Id ]
 */
-struct DWR : med::set< avp_code
-	, M< origin_host >
+struct DWR : med::set<
+	  M< origin_host >
 	, M< origin_realm >
 	, O< origin_state_id >
 	, O< any_avp, med::inf >
@@ -158,8 +158,8 @@ struct DWR : med::set< avp_code
 	   * [ Failed-AVP ]
 		 [ Origin-State-Id ]
 */
-struct DWA : med::set< avp_code
-	, M< result_code >
+struct DWA : med::set<
+	  M< result_code >
 	, M< origin_host >
 	, M< origin_realm >
 	, O< error_message >
@@ -172,10 +172,12 @@ struct DWA : med::set< avp_code
 	static constexpr char const* name() { return "Device-Watchdog-Answer"; }
 };
 
+//using request = med::tag<med::value<med::fixed<REQUEST | MSG::code, uint32_t>>, MSG>;
+//using answer = med::tag<med::value<med::fixed<MSG::code, uint32_t>>, MSG>;
 template <class MSG>
-using request = med::tag<med::value<med::fixed<REQUEST | MSG::code, uint32_t>>, MSG>;
+using request = med::mandatory<med::value<med::fixed<REQUEST | MSG::code, uint32_t>>, MSG>;
 template <class MSG>
-using answer = med::tag<med::value<med::fixed<MSG::code, uint32_t>>, MSG>;
+using answer = med::mandatory<med::value<med::fixed<MSG::code, uint32_t>>, MSG>;
 
 //--- DIAMETER protocol base part
 struct base : med::choice< header
@@ -187,7 +189,7 @@ struct base : med::choice< header
 	, answer<DWA>
 >
 {
-	using length_type = length;
+	using length_type = typename length::length_type;
 };
 
 }	//end: namespace diameter

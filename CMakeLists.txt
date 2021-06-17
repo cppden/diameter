@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.8)
-
 set(THIS_NAME diameter)
 
 project(${THIS_NAME})
@@ -27,7 +25,7 @@ endif ()
 # Library path
 set(CMAKE_LDFLAGS "${CMAKE_LDFLAGS} -L\".\" ")
 
-file(GLOB_RECURSE UT_SRCS ut/*.cpp)
+file(GLOB_RECURSE UT_SRCS ut/*.cpp ut/*.hpp)
 
 add_compile_options(
     -Werror 

@@ -30,7 +30,7 @@ constexpr uint32_t REQUEST = 0x80000000;
  * Header definitions
  ***************************************************************/
 struct version : med::value<med::fixed<1, uint8_t>> {};
-struct length : med::value<med::bytes<3>> {};
+struct length : med::length_t< med::value<med::bytes<3>> > {};
 
 /*
 0 1 2 3 4 5 6 7
@@ -242,8 +242,10 @@ struct avp_header : med::sequence<
 		O< vendor, vendor::has >,
 		M< VALUE >
 	>
+	, med::add_meta_info< med::mi<med::mik::TAG, avp_code_fixed<CODE>> >
+//	, med::add_meta_info< med::mi<med::mik::TAG, avp_code_fixed<CODE>> >
 {
-	using length_type = length;
+	using length_type = typename length::length_type;
 	using padding = med::padding<uint32_t, false>;
 
 	static constexpr uint32_t id = CODE;
@@ -299,7 +301,6 @@ struct avp<
 		VALUE, CODE, FLAGS, VND,
 		std::enable_if_t<std::is_same_v<med::IE_VALUE, typename VALUE::ie_type>>
 	> : detail::avp_header<VALUE, CODE, FLAGS, VND>
-	, med::tag_t< avp_code_fixed<CODE> >
 {
 	//using value_type = typename VALUE::value_type;
 	auto get() const                                { return this->body().get(); }
@@ -312,7 +313,6 @@ struct avp<
 		VALUE, CODE, FLAGS, VND,
 		std::enable_if_t<std::is_same_v<med::IE_OCTET_STRING, typename VALUE::ie_type>>
 	> : detail::avp_header<VALUE, CODE, FLAGS, VND>
-	, med::tag_t< avp_code_fixed<CODE> >
 {
 	std::size_t size() const                        { return this->body().size(); }
 	uint8_t const* data() const                     { return this->body().data(); }
@@ -326,7 +326,7 @@ struct avp<
 //	template <class... ARGS>
 //	auto copy(base_t const& from, ARGS&&... args)   { return body().copy(from, std::forward<ARGS>(args)...); }
 
-	template <class T, class Enable = std::enable_if_t<std::is_pointer_v<decltype(((T*)0)->data())>>>
+	template <class T, class Enable = std::enable_if_t<std::is_pointer_v<decltype(std::declval<T const>().data())>>>
 	auto set(T const& v)                            { return set(v.size(), v.data()); }
 	auto set(std::size_t len, void const* data)     { return this->body().set(len, data); }
 };
@@ -335,21 +335,18 @@ struct avp<
  * Grouped/multi-value AVPs
  ***************************************************************/
 template <avp_code::value_type CODE, uint8_t FLAGS, VENDOR VND, class... AVPs>
-struct avp_grouped : detail::avp_header<
-		med::set<avp_code, AVPs...>
-		, CODE, FLAGS, VND
-	>
-	, med::tag_t< avp_code_fixed<CODE> >
+struct avp_grouped : detail::avp_header< med::set<AVPs...>, CODE, FLAGS, VND >
+//	, med::add_meta_info< med::mi<med::mik::TAG, avp_code_fixed<CODE>> >
 {
 	static_assert(sizeof...(AVPs) > 1, "USE PLAIN AVP FOR SINGLE VALUE");
 
 	template <class FIELD>
-	FIELD& ref()                            { return this->body().template ref<FIELD>(); }
+	decltype(auto) ref()                    { return this->body().template ref<FIELD>(); }
 	template <class FIELD>
 	decltype(auto) get() const              { return this->body().template get<FIELD>(); }
 
-	template <class FIELD, class... ARGS>
-	FIELD* push_back(ARGS&&... args)        { return this->body().template push_back<FIELD>(std::forward<ARGS>(args)...); }
+//	template <class FIELD, class... ARGS>
+//	FIELD* push_back(ARGS&&... args)        { return this->body().template push_back<FIELD>(std::forward<ARGS>(args)...); }
 
 	template <class FIELD>
 	std::size_t count() const               { return this->body().template count<FIELD>(); }
@@ -362,9 +359,9 @@ struct any_avp : med::sequence<
 		O< vendor, vendor::has >,
 		M< med::octet_string<> >
 	>
-	, med::tag_t<avp_code>
+	, med::add_meta_info< med::mi<med::mik::TAG, avp_code> >
 {
-	using length_type = length;
+	using length_type = typename length::length_type;
 	using padding = med::padding<uint32_t, false>;
 
 	bool is_set() const                 { return get<med::octet_string<>>().is_set(); }

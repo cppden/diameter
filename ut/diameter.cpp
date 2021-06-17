@@ -334,30 +334,30 @@ TEST(encode, cer)
 
 	msg.ref<diameter::origin_host>().set("Orig.Host"sv);
 	msg.ref<diameter::origin_realm>().set("orig.realm.net"sv);
-	msg.push_back<diameter::host_ip_address>(ctx)->set(sizeof(ip4), ip4);
+	msg.ref<diameter::host_ip_address>().push_back(ctx)->set(sizeof(ip4), ip4);
 	msg.ref<diameter::vendor_id>().set(diameter::VENDOR::NONE);
 	msg.ref<diameter::product_name>().set("base:dia"sv);
 
-	msg.push_back<diameter::supported_vendor_id>(ctx)->set(diameter::VENDOR::TGPP);
-	msg.push_back<diameter::supported_vendor_id>(ctx)->set(diameter::VENDOR::NOKIA);
-	msg.push_back<diameter::auth_application_id>(ctx)->set(diameter::APPLICATION::NONE);
-	msg.push_back<diameter::auth_application_id>(ctx)->set(diameter::APPLICATION::S6A);
-	msg.push_back<diameter::auth_application_id>(ctx)->set(diameter::APPLICATION::GX);
-	msg.push_back<diameter::auth_application_id>(ctx)->set(diameter::APPLICATION::GXX);
+	msg.ref<diameter::supported_vendor_id>().push_back(ctx)->set(diameter::VENDOR::TGPP);
+	msg.ref<diameter::supported_vendor_id>().push_back(ctx)->set(diameter::VENDOR::NOKIA);
+	msg.ref<diameter::auth_application_id>().push_back(ctx)->set(diameter::APPLICATION::NONE);
+	msg.ref<diameter::auth_application_id>().push_back(ctx)->set(diameter::APPLICATION::S6A);
+	msg.ref<diameter::auth_application_id>().push_back(ctx)->set(diameter::APPLICATION::GX);
+	msg.ref<diameter::auth_application_id>().push_back(ctx)->set(diameter::APPLICATION::GXX);
 
 	{
-		auto* id = msg.push_back<diameter::vendor_specific_application_id>(ctx);
-		id->push_back<diameter::vendor_id>(ctx)->set(diameter::VENDOR::TGPP);
+		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(ctx);
+		id->ref<diameter::vendor_id>().push_back(ctx)->set(diameter::VENDOR::TGPP);
 		id->ref<diameter::auth_application_id>().set(diameter::APPLICATION::S6A);
 	}
 	{
-		auto* id = msg.push_back<diameter::vendor_specific_application_id>(ctx);
-		id->push_back<diameter::vendor_id>(ctx)->set(diameter::VENDOR::TGPP);
+		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(ctx);
+		id->ref<diameter::vendor_id>().push_back(ctx)->set(diameter::VENDOR::TGPP);
 		id->ref<diameter::auth_application_id>().set(diameter::APPLICATION::GX);
 	}
 	{
-		auto* id = msg.push_back<diameter::vendor_specific_application_id>(ctx);
-		id->push_back<diameter::vendor_id>(ctx)->set(diameter::VENDOR::TGPP);
+		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(ctx);
+		id->ref<diameter::vendor_id>().push_back(ctx)->set(diameter::VENDOR::TGPP);
 		id->ref<diameter::auth_application_id>().set(diameter::APPLICATION::GXX);
 	}
 
@@ -466,30 +466,30 @@ TEST(encode, cea)
 	msg.ref<diameter::result_code>().set(diameter::RESULT::SUCCESS);
 	msg.ref<diameter::origin_host>().set("Orig.Host"sv);
 	msg.ref<diameter::origin_realm>().set("orig.realm.net"sv);
-	msg.push_back<diameter::host_ip_address>(ctx)->set(sizeof(ip4), ip4);
+	msg.ref<diameter::host_ip_address>().push_back(ctx)->set(sizeof(ip4), ip4);
 	msg.ref<diameter::vendor_id>().set(diameter::VENDOR::NONE);
 	msg.ref<diameter::product_name>().set("base:dia"sv);
 	//msg.ref<diameter::origin_state_id>().set(0);
-	msg.push_back<diameter::supported_vendor_id>(ctx)->set(diameter::VENDOR::TGPP);
-	msg.push_back<diameter::supported_vendor_id>(ctx)->set(diameter::VENDOR::NOKIA);
-	msg.push_back<diameter::auth_application_id>(ctx)->set(diameter::APPLICATION::NONE);
-	msg.push_back<diameter::auth_application_id>(ctx)->set(diameter::APPLICATION::S6A);
-	msg.push_back<diameter::auth_application_id>(ctx)->set(diameter::APPLICATION::GX);
-	msg.push_back<diameter::auth_application_id>(ctx)->set(diameter::APPLICATION::GXX);
+	msg.ref<diameter::supported_vendor_id>().push_back(ctx)->set(diameter::VENDOR::TGPP);
+	msg.ref<diameter::supported_vendor_id>().push_back(ctx)->set(diameter::VENDOR::NOKIA);
+	msg.ref<diameter::auth_application_id>().push_back(ctx)->set(diameter::APPLICATION::NONE);
+	msg.ref<diameter::auth_application_id>().push_back(ctx)->set(diameter::APPLICATION::S6A);
+	msg.ref<diameter::auth_application_id>().push_back(ctx)->set(diameter::APPLICATION::GX);
+	msg.ref<diameter::auth_application_id>().push_back(ctx)->set(diameter::APPLICATION::GXX);
 
 	{
-		auto* id = msg.push_back<diameter::vendor_specific_application_id>(ctx);
-		id->push_back<diameter::vendor_id>(ctx)->set(diameter::VENDOR::TGPP);
+		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(ctx);
+		id->ref<diameter::vendor_id>().push_back(ctx)->set(diameter::VENDOR::TGPP);
 		id->ref<diameter::auth_application_id>().set(diameter::APPLICATION::S6A);
 	}
 	{
-		auto* id = msg.push_back<diameter::vendor_specific_application_id>(ctx);
-		id->push_back<diameter::vendor_id>(ctx)->set(diameter::VENDOR::TGPP);
+		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(ctx);
+		id->ref<diameter::vendor_id>().push_back(ctx)->set(diameter::VENDOR::TGPP);
 		id->ref<diameter::auth_application_id>().set(diameter::APPLICATION::GX);
 	}
 	{
-		auto* id = msg.push_back<diameter::vendor_specific_application_id>(ctx);
-		id->push_back<diameter::vendor_id>(ctx)->set(diameter::VENDOR::TGPP);
+		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(ctx);
+		id->ref<diameter::vendor_id>().push_back(ctx)->set(diameter::VENDOR::TGPP);
 		id->ref<diameter::auth_application_id>().set(diameter::APPLICATION::GXX);
 	}
 
