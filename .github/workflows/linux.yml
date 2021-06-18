@@ -8,13 +8,9 @@ jobs:
       fail-fast: false
       matrix:
         compiler:
-          - g++-9
           - g++-10
 #          - g++-11
-          - clang++-10
-          - clang++-11
           - clang++-12
-
         build_type: [Debug, Release]
 
     runs-on: ubuntu-latest
@@ -28,6 +24,8 @@ jobs:
         sudo apt-get install -y ${{ matrix.compiler }}
         sudo apt-get install -y libgtest-dev
     - uses: actions/checkout@v2
+      with:
+        submodules: true
     - run: cmake -E make_directory build
     - working-directory: build/
       run: |
