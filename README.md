@@ -1,4 +1,4 @@
-[![Build](https://github.com/cppden/diameter/workflows/Linux Build/badge.svg)](https://github.com/cppden/diameter/actions?query=workflow%3ALinux)
+[![Build](https://github.com/cppden/diameter/workflows/Linux/badge.svg)](https://github.com/cppden/diameter/actions?query=workflow%3ALinux)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](../master/LICENSE)
 
 # DIAMETER
