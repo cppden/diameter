@@ -273,6 +273,10 @@ struct error_reporting_host : avp<med::ascii_string<>, 294>
 {
 	static constexpr char const* name() { return "Error-Reporting-Host"; }
 };
+struct event_timestamp : avp<time, 55, avp_flags::M>
+{
+	static constexpr char const* name() { return "Event-Timestamp"; }
+};
 
 struct origin_realm : avp<med::ascii_string<>, 296, avp_flags::M>
 {
@@ -342,6 +346,49 @@ struct acct_application_id : avp<enumerated<APPLICATION>, 259, avp_flags::M>
 {
 	static constexpr char const* name() { return "Acct-Application-Id"; }
 };
+
+enum class ACCT_RECORD_TYPE : uint32_t
+{
+	EVENT_RECORD   = 1,
+	START_RECORD   = 2,
+	INTERIM_RECORD = 3,
+	STOP_RECORD    = 4
+};
+struct acct_record_type : avp<enumerated<ACCT_RECORD_TYPE>, 480, avp_flags::M>
+{
+	static constexpr char const* name() { return "Acct-Record-Type"; }
+};
+struct acct_interim_interval : avp<unsigned32, 85, avp_flags::M>
+{
+	static constexpr char const* name() { return "Acct-Interim-Interval"; }
+};
+struct acct_record_number : avp<unsigned32, 485, avp_flags::M>
+{
+	static constexpr char const* name() { return "Acct-Record-Number"; }
+};
+struct acct_sub_session_id : avp<unsigned64, 287, avp_flags::M>
+{
+	static constexpr char const* name() { return "Acct-Sub-Session-Id"; }
+};
+struct acct_session_id : avp<med::octet_string<>, 44, avp_flags::M>
+{
+	static constexpr char const* name() { return "Acct-Session-Id"; }
+};
+struct acct_multi_session_id : avp<med::ascii_string<>, 50>
+{
+	static constexpr char const* name() { return "Acct-Multi-Session-Id"; }
+};
+enum class ACCT_REALTIME_REQUIRED : uint32_t
+{
+	DELIVER_AND_GRANT = 1,
+	GRANT_AND_STORE   = 2,
+	GRANT_AND_LOSE    = 3,
+};
+struct acct_realtime_required : avp<enumerated<ACCT_REALTIME_REQUIRED>, 483, avp_flags::M>
+{
+	static constexpr char const* name() { return "Acct-Realtime-Required"; }
+};
+
 
 struct firmware_revision : avp<unsigned32, 267>
 {

@@ -812,6 +812,96 @@ TEST(decode, dwa_unexp)
 }
 #endif
 
+#if 1
+uint8_t const req_unknown[] = {
+	0x01, 0x00, 0x00, 0x4C, //VER(1), LEN(3)
+	0x80, 0x00, 0x11, 0x1A, //R.P.E.T(1), CMD(3) = ??
+	0x00, 0x00, 0x00, 0x00, //APP-ID
+	0x22, 0x22, 0x22, 0x22, //H2H-ID
+	0x55, 0x55, 0x55, 0x55, //E2E-ID
+
+	0x00, 0x00, 0x01, 0x08, //AVP-CODE = 264 OrigHost
+	0x40, 0x00, 0x00, 0x11, //V.M.P(1), LEN(3) = 17 + padding
+	'O', 'r', 'i', 'g',
+	'.', 'H', 'o', 's',
+	't',   0,   0,   0,
+
+	0x00, 0x00, 0x01, 0x28, //AVP-CODE = 296 OrigRealm
+	0x40, 0x00, 0x00, 0x16, //V.M.P(1), LEN(3) = 22 + padding
+	'o', 'r', 'i', 'g',
+	'.', 'r', 'e', 'a',
+	'l', 'm', '.', 'n',
+	'e', 't',   0,   0,
+
+	0x00, 0x00, 0x01, 0x11, //AVP = 273 Disconnect-Cause AVP
+	0x40, 0x00, 0x00, 0x0C, //V.M.P(1), LEN(3) = 12
+	0x00, 0x00, 0x00, 0x02, //cause = 2
+};
+TEST(decode, req_unknown)
+{
+	diameter::base dia;
+
+	med::decoder_context<> ctx{ req_unknown};
+	decode(med::octet_decoder{ctx}, dia);
+
+	ASSERT_EQ(0, dia.header().ap_id());
+	ASSERT_EQ(0x22222222, dia.header().hop_id());
+	ASSERT_EQ(0x55555555, dia.header().end_id());
+
+	diameter::Request const* msg = dia.cselect();
+	ASSERT_NE(nullptr, msg);
+
+	auto* realm = msg->get<diameter::origin_realm>();
+	ASSERT_NE(nullptr, realm);
+	auto const exp = "orig.realm.net"sv;
+	EXPECT_TRUE(Matches(exp, *realm));
+}
+
+uint8_t const ans_unknown[] = {
+	0x01, 0x00, 0x00, 0x4C, //VER(1), LEN(3)
+	0x00, 0x00, 0x11, 0x1A, //R.P.E.T(1), CMD(3) = ??
+	0x00, 0x00, 0x00, 0x00, //APP-ID
+	0x22, 0x22, 0x22, 0x22, //H2H-ID
+	0x55, 0x55, 0x55, 0x55, //E2E-ID
+
+	0x00, 0x00, 0x01, 0x0C, //AVP = 268 Result Code
+	0x40, 0x00, 0x00, 0x0C, //V.M.P(1), LEN(3) = 12
+	0x00, 0x00, 0x0B, 0xBC, //result = 3004
+
+	0x00, 0x00, 0x01, 0x08, //AVP-CODE = 264 OrigHost
+	0x40, 0x00, 0x00, 0x11, //V.M.P(1), LEN(3) = 17 + padding
+	'O', 'r', 'i', 'g',
+	'.', 'H', 'o', 's',
+	't',   0,   0,   0,
+
+	0x00, 0x00, 0x01, 0x28, //AVP-CODE = 296 OrigRealm
+	0x40, 0x00, 0x00, 0x16, //V.M.P(1), LEN(3) = 22 + padding
+	'o', 'r', 'i', 'g',
+	'.', 'r', 'e', 'a',
+	'l', 'm', '.', 'n',
+	'e', 't',   0,   0,
+};
+TEST(decode, ans_unknown)
+{
+	diameter::base dia;
+
+	med::decoder_context<> ctx{ ans_unknown};
+	decode(med::octet_decoder{ctx}, dia);
+
+	ASSERT_EQ(0, dia.header().ap_id());
+	ASSERT_EQ(0x22222222, dia.header().hop_id());
+	ASSERT_EQ(0x55555555, dia.header().end_id());
+
+	diameter::Answer const* msg = dia.cselect();
+	ASSERT_NE(nullptr, msg);
+
+	auto* realm = msg->get<diameter::origin_realm>();
+	ASSERT_NE(nullptr, realm);
+	auto const exp = "orig.realm.net"sv;
+	EXPECT_TRUE(Matches(exp, *realm));
+}
+#endif
+
 int main(int argc, char **argv)
 {
 	::testing::InitGoogleTest(&argc, argv);
