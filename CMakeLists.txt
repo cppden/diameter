@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.00)
+
 set(THIS_NAME diameter)
 
 project(${THIS_NAME})
@@ -25,7 +27,8 @@ endif ()
 # Library path
 set(CMAKE_LDFLAGS "${CMAKE_LDFLAGS} -L\".\" ")
 
-file(GLOB_RECURSE UT_SRCS ut/*.cpp ut/*.hpp)
+file(GLOB DIA_SRC diameter/*.hpp)
+file(GLOB_RECURSE UT_SRC ut/*.cpp ut/*.hpp)
 
 add_compile_options(
     -Werror 
@@ -39,7 +42,7 @@ add_compile_options(
     -pedantic-errors
 )
 
-add_executable(gtest_${THIS_NAME} ${UT_SRCS})
+add_executable(gtest_${THIS_NAME} ${UT_SRC} ${DIA_SRC})
 
 if(DEFINED ENV{BUILD_FLAGS})
     set(BUILD_FLAGS "$ENV{BUILD_FLAGS}")

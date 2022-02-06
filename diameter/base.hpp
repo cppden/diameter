@@ -557,7 +557,7 @@ struct base : med::choice< header
 	, med::mandatory<any_answer, Answer>
 >
 {
-	using length_type = typename length::length_type;
+	using length_type = length;
 };
 
 }	//end: namespace diameter

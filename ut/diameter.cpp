@@ -329,38 +329,40 @@ TEST(encode, cer)
 	dia.header().hop_id(0x22222222);
 	dia.header().end_id(0x55555555);
 
-	uint8_t buffer[1024] = {};
-	med::encoder_context<> ctx{ buffer };
+	std::size_t alloc_buf[1024];
+	med::allocator alloc{alloc_buf};
 
 	msg.ref<diameter::origin_host>().set("Orig.Host"sv);
 	msg.ref<diameter::origin_realm>().set("orig.realm.net"sv);
-	msg.ref<diameter::host_ip_address>().push_back(ctx)->set(sizeof(ip4), ip4);
+	msg.ref<diameter::host_ip_address>().push_back(alloc)->set(sizeof(ip4), ip4);
 	msg.ref<diameter::vendor_id>().set(diameter::VENDOR::NONE);
 	msg.ref<diameter::product_name>().set("base:dia"sv);
 
-	msg.ref<diameter::supported_vendor_id>().push_back(ctx)->set(diameter::VENDOR::TGPP);
-	msg.ref<diameter::supported_vendor_id>().push_back(ctx)->set(diameter::VENDOR::NOKIA);
-	msg.ref<diameter::auth_application_id>().push_back(ctx)->set(diameter::APPLICATION::NONE);
-	msg.ref<diameter::auth_application_id>().push_back(ctx)->set(diameter::APPLICATION::S6A);
-	msg.ref<diameter::auth_application_id>().push_back(ctx)->set(diameter::APPLICATION::GX);
-	msg.ref<diameter::auth_application_id>().push_back(ctx)->set(diameter::APPLICATION::GXX);
+	msg.ref<diameter::supported_vendor_id>().push_back(alloc)->set(diameter::VENDOR::TGPP);
+	msg.ref<diameter::supported_vendor_id>().push_back(alloc)->set(diameter::VENDOR::NOKIA);
+	msg.ref<diameter::auth_application_id>().push_back(alloc)->set(diameter::APPLICATION::NONE);
+	msg.ref<diameter::auth_application_id>().push_back(alloc)->set(diameter::APPLICATION::S6A);
+	msg.ref<diameter::auth_application_id>().push_back(alloc)->set(diameter::APPLICATION::GX);
+	msg.ref<diameter::auth_application_id>().push_back(alloc)->set(diameter::APPLICATION::GXX);
 
 	{
-		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(ctx);
-		id->ref<diameter::vendor_id>().push_back(ctx)->set(diameter::VENDOR::TGPP);
+		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(alloc);
+		id->ref<diameter::vendor_id>().push_back(alloc)->set(diameter::VENDOR::TGPP);
 		id->ref<diameter::auth_application_id>().set(diameter::APPLICATION::S6A);
 	}
 	{
-		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(ctx);
-		id->ref<diameter::vendor_id>().push_back(ctx)->set(diameter::VENDOR::TGPP);
+		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(alloc);
+		id->ref<diameter::vendor_id>().push_back(alloc)->set(diameter::VENDOR::TGPP);
 		id->ref<diameter::auth_application_id>().set(diameter::APPLICATION::GX);
 	}
 	{
-		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(ctx);
-		id->ref<diameter::vendor_id>().push_back(ctx)->set(diameter::VENDOR::TGPP);
+		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(alloc);
+		id->ref<diameter::vendor_id>().push_back(alloc)->set(diameter::VENDOR::TGPP);
 		id->ref<diameter::auth_application_id>().set(diameter::APPLICATION::GXX);
 	}
 
+	uint8_t buffer[1024];
+	med::encoder_context<> ctx{buffer};
 	encode(med::octet_encoder{ctx}, dia);
 	EXPECT_EQ(sizeof(cer_encoded1), ctx.buffer().get_offset());
 	EXPECT_TRUE(Matches(cer_encoded1, buffer));
@@ -371,7 +373,8 @@ TEST(decode, cer)
 	diameter::base dia;
 
 	std::size_t alloc_buf[1024];
-	med::decoder_context<> ctx{ cer_encoded1, alloc_buf };
+	med::allocator alloc{alloc_buf};
+	med::decoder_context<med::allocator> ctx{ cer_encoded1, &alloc};
 	decode(med::octet_decoder{ctx}, dia);
 
 	ASSERT_EQ(0, dia.header().ap_id());
@@ -460,39 +463,41 @@ TEST(encode, cea)
 	dia.header().hop_id(0x22222222);
 	dia.header().end_id(0x55555555);
 
-	uint8_t buffer[1024] = {};
-	med::encoder_context<> ctx{ buffer };
+	std::size_t alloc_buf[1024];
+	med::allocator alloc{alloc_buf};
 
 	msg.ref<diameter::result_code>().set(diameter::RESULT::SUCCESS);
 	msg.ref<diameter::origin_host>().set("Orig.Host"sv);
 	msg.ref<diameter::origin_realm>().set("orig.realm.net"sv);
-	msg.ref<diameter::host_ip_address>().push_back(ctx)->set(sizeof(ip4), ip4);
+	msg.ref<diameter::host_ip_address>().push_back(alloc)->set(sizeof(ip4), ip4);
 	msg.ref<diameter::vendor_id>().set(diameter::VENDOR::NONE);
 	msg.ref<diameter::product_name>().set("base:dia"sv);
 	//msg.ref<diameter::origin_state_id>().set(0);
-	msg.ref<diameter::supported_vendor_id>().push_back(ctx)->set(diameter::VENDOR::TGPP);
-	msg.ref<diameter::supported_vendor_id>().push_back(ctx)->set(diameter::VENDOR::NOKIA);
-	msg.ref<diameter::auth_application_id>().push_back(ctx)->set(diameter::APPLICATION::NONE);
-	msg.ref<diameter::auth_application_id>().push_back(ctx)->set(diameter::APPLICATION::S6A);
-	msg.ref<diameter::auth_application_id>().push_back(ctx)->set(diameter::APPLICATION::GX);
-	msg.ref<diameter::auth_application_id>().push_back(ctx)->set(diameter::APPLICATION::GXX);
+	msg.ref<diameter::supported_vendor_id>().push_back(alloc)->set(diameter::VENDOR::TGPP);
+	msg.ref<diameter::supported_vendor_id>().push_back(alloc)->set(diameter::VENDOR::NOKIA);
+	msg.ref<diameter::auth_application_id>().push_back(alloc)->set(diameter::APPLICATION::NONE);
+	msg.ref<diameter::auth_application_id>().push_back(alloc)->set(diameter::APPLICATION::S6A);
+	msg.ref<diameter::auth_application_id>().push_back(alloc)->set(diameter::APPLICATION::GX);
+	msg.ref<diameter::auth_application_id>().push_back(alloc)->set(diameter::APPLICATION::GXX);
 
 	{
-		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(ctx);
-		id->ref<diameter::vendor_id>().push_back(ctx)->set(diameter::VENDOR::TGPP);
+		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(alloc);
+		id->ref<diameter::vendor_id>().push_back(alloc)->set(diameter::VENDOR::TGPP);
 		id->ref<diameter::auth_application_id>().set(diameter::APPLICATION::S6A);
 	}
 	{
-		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(ctx);
-		id->ref<diameter::vendor_id>().push_back(ctx)->set(diameter::VENDOR::TGPP);
+		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(alloc);
+		id->ref<diameter::vendor_id>().push_back(alloc)->set(diameter::VENDOR::TGPP);
 		id->ref<diameter::auth_application_id>().set(diameter::APPLICATION::GX);
 	}
 	{
-		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(ctx);
-		id->ref<diameter::vendor_id>().push_back(ctx)->set(diameter::VENDOR::TGPP);
+		auto* id = msg.ref<diameter::vendor_specific_application_id>().push_back(alloc);
+		id->ref<diameter::vendor_id>().push_back(alloc)->set(diameter::VENDOR::TGPP);
 		id->ref<diameter::auth_application_id>().set(diameter::APPLICATION::GXX);
 	}
 
+	uint8_t buffer[1024];
+	med::encoder_context<> ctx{ buffer };
 	encode(med::octet_encoder{ctx}, dia);
 	ASSERT_EQ(sizeof(cea_encoded1), ctx.buffer().get_offset());
 	EXPECT_TRUE(Matches(cea_encoded1, buffer));
@@ -501,7 +506,8 @@ TEST(encode, cea)
 TEST(decode, cea)
 {
 	std::size_t alloc_buf[1024];
-	med::decoder_context<> ctx{ cea_encoded1, alloc_buf };
+	med::allocator alloc{alloc_buf};
+	med::decoder_context<med::allocator> ctx{ cea_encoded1, &alloc};
 
 	diameter::base dia;
 	decode(med::octet_decoder{ctx}, dia);

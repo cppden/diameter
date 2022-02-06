@@ -14,6 +14,7 @@ Distributed under the MIT License
 #include "med/placeholder.hpp"
 #include "med/octet_string.hpp"
 #include "med/sequence.hpp"
+#include "med/set.hpp"
 
 namespace diameter {
 
@@ -30,7 +31,7 @@ constexpr uint32_t REQUEST = 0x80000000;
  * Header definitions
  ***************************************************************/
 struct version : med::value<med::fixed<1, uint8_t>> {};
-struct length : med::length_t< med::value<med::bytes<3>> > {};
+using length = med::value<med::bytes<3>, med::padding<uint32_t>>;
 
 /*
 0 1 2 3 4 5 6 7
@@ -245,8 +246,7 @@ struct avp_header : med::sequence<
 	, med::add_meta_info< med::mi<med::mik::TAG, avp_code_fixed<CODE>> >
 //	, med::add_meta_info< med::mi<med::mik::TAG, avp_code_fixed<CODE>> >
 {
-	using length_type = typename length::length_type;
-	using padding = med::padding<uint32_t, false>;
+	using length_type = length;
 
 	static constexpr uint32_t id = CODE;
 
@@ -361,8 +361,7 @@ struct any_avp : med::sequence<
 	>
 	, med::add_meta_info< med::mi<med::mik::TAG, avp_code> >
 {
-	using length_type = typename length::length_type;
-	using padding = med::padding<uint32_t, false>;
+	using length_type = length;
 
 	bool is_set() const                 { return get<med::octet_string<>>().is_set(); }
 };
